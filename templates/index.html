@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('message', function(data) {
+            var messageDiv = document.createElement('div');
+            messageDiv.innerHTML = '<strong>' + data.nickname + ':</strong> ' + data.content;
+            document.getElementById('messages').appendChild(messageDiv);
+        });
+
+        function sendMessage() {
+            var messageContent = document.getElementById('message').value;
+            socket.emit('message', { content: messageContent });
+            document.getElementById('message').value = '';
+        }
+    </script>
+<link href="../static/styles/styles.css" rel="stylesheet" type="text/css">
+</head>
+	
+<body>
+	<div class="container">
+    <h1>ComCE</h1>
+
+    <div id="messages">
+        {% for message in messages %}
+        <p><strong>{{ message.user.nickname }}:</strong> {{ message.content }}</p>
+        {% endfor %}
+    </div>
+
+    <input type="text" id="message" placeholder="Type your message" required>
+    <button onclick="sendMessage()">Send</button>
+
+    <a href="{{ url_for('logout') }}">Logout</a>
+		</div>
+</body>
+</html>
