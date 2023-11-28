@@ -1,11 +1,20 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask_socketio import SocketIO, emit
 from werkzeug.security import generate_password_hash, check_password_hash
-import json
+from datetime import datetime
+import json 
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
 
 app = Flask(__name__)
+app.json_encoder = CustomJSONEncoder
+
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chatroom.db'
 db = SQLAlchemy(app)
@@ -24,6 +33,7 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
 
 with app.app_context():
     db.create_all()
@@ -42,19 +52,18 @@ def update_users_json():
             'messages': []
         }
 
-        
         messages = Message.query.filter_by(user_id=user.id).all()
         for message in messages:
             user_data['messages'].append({
                 'id': message.id,
                 'content': message.content,
-                'timestamp': message.timestamp 
+                'timestamp': message.timestamp
             })
 
         users_data.append(user_data)
 
     with open('instance/users.json', 'w') as json_file:
-        json.dump(users_data, json_file)
+        json.dump(users_data, json_file, indent=4, default=str)
 
 @app.route('/')
 def index():
@@ -73,6 +82,7 @@ def handle_message(data):
     db.session.add(message)
     db.session.commit()
 
+    update_users_json()
     emit('message', {'content': content, 'nickname': User.query.get(user_id).nickname}, broadcast=True)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -92,6 +102,7 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             flash('Registration successful! Please log in.')
+            update_users_json()
             return redirect(url_for('login'))
         except IntegrityError as e:
             db.session.rollback()
