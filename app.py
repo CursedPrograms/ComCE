@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_socketio import SocketIO, emit
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-import json 
+import json
 
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -76,14 +76,27 @@ def index():
 @socketio.on('message')
 def handle_message(data):
     content = data['content']
-    user_id = session['user_id']
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        emit('message_error', {'error': 'User not authenticated'})
+        return
 
     message = Message(content=content, user_id=user_id)
-    db.session.add(message)
-    db.session.commit()
-
-    update_users_json()
-    emit('message', {'content': content, 'nickname': User.query.get(user_id).nickname}, broadcast=True)
+    try:
+        db.session.add(message)
+        db.session.commit()
+        message_data = {
+            'content': content,
+            'nickname': User.query.get(user_id).nickname,
+            'timestamp': message.timestamp.isoformat()
+        }
+        emit('message', message_data, broadcast=True)
+        update_users_json()
+    except Exception as e:
+        print(f"Error committing to the database: {e}")
+        db.session.rollback()
+        emit('message_error', {'error': 'Failed to save message to the database'})
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -139,4 +152,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', port=443, log_output=True, debug=True)
