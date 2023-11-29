@@ -13,13 +13,20 @@
             var messageDiv = document.createElement('div');
             messageDiv.innerHTML = '<strong>' + data.nickname + ':</strong> ' + data.content;
             document.getElementById('messages').appendChild(messageDiv);
+            scrollToBottom();
         });
 
         function sendMessage() {
             var messageContent = document.getElementById('message').value;
             socket.emit('message', { content: messageContent });
             document.getElementById('message').value = '';
+            scrollToBottom();
         }
+
+        function scrollToBottom() {
+          var messagesContainer = document.getElementById('messages');
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
     </script>
 <link href="../static/styles/styles.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="https://cursedprograms.github.io/cursedentertainment/styles/icon-style.css">
