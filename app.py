@@ -152,4 +152,9 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    ssl_cert_path = os.path.join(script_dir, 'keys', 'server.crt')
+    ssl_key_path = os.path.join(script_dir, 'keys', 'server.key')
+    socketio.run(app, debug=True, ssl_context=(ssl_cert_path, ssl_key_path))
+
