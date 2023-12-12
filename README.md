@@ -8,7 +8,7 @@ ComCE is a simple Flask chatroom application with real-time messaging, user regi
 
 To run the ComCE chatroom locally, follow these steps:
 
-# Clone the repository:
+## Clone the repository:
 
 git clone https://github.com/CursedPrograms/ComCE.git
 Navigate to the project directory:
