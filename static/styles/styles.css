@@ -6,11 +6,13 @@
 html {
   scroll-behavior: smooth;
 }
+
 * {
   font-family: Futura, sans-serif;
   font-weight: lighter;
   letter-spacing: 3px;
 }
+
 body {
   font-family: 'Arial', sans-serif;
   background-color: #007ab7;
@@ -22,19 +24,23 @@ body {
   justify-content: center;
   min-height: 100vh;
 }
+
 footer {
   background-color: #007ab7;
   font-weight: lighter;
   text-align: center;
   padding-bottom: 2%;
 }
+
 .container {
   width: 80%;
 }
+
 h1 {
   color: #fff;
   text-align: center;
 }
+
 form {
   max-width: 400px;
   margin: 20px auto;
@@ -43,16 +49,19 @@ form {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
+
 form label {
   display: block;
   margin-bottom: 8px;
 }
+
 form input {
   width: 100%;
   padding: 8px;
   margin-bottom: 16px;
   box-sizing: border-box;
 }
+
 button {
   background-color: #f088e9;
   color: #fff;
@@ -61,24 +70,30 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
 button:hover {
   background-color: #168FCC;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 ul li {
   color: #f088e9;
 }
+
 p {
   text-align: center;
 }
+
 #message {
   width: calc(100% - 80px);
   padding: 8px;
   box-sizing: border-box;
 }
+
 #messages {
   max-width: 800px;
   margin: 20px auto;
@@ -91,6 +106,7 @@ p {
   overflow-y: auto;
   border: 1px solid #ccc;
 }
+
 #messages div {
   background-color: #168FCC;
   padding: 10px;
@@ -98,6 +114,7 @@ p {
   border-radius: 10px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
 #messages div strong {
   color: #f088e9;
 }
