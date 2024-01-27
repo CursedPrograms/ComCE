@@ -1,10 +1,13 @@
 @import url('https://cursedprograms.github.io/cursedentertainment/styles/main-style.css');
 
-.container {
-  width: 80%;
+body{
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.container {
+  width: 80%;
 }
 
 form {
